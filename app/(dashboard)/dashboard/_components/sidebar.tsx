@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from "next/link";
+import { usePathname } from 'next/navigation';
 import { IoMdClose } from "react-icons/io";
 import { RiDashboardLine, RiUserLine, RiSettingsLine } from "react-icons/ri";
 
@@ -15,6 +16,8 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const pathname = usePathname();
+
   return (
     <aside 
       className={`
@@ -37,16 +40,24 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       </div>
       
       <nav className="p-4 space-y-2">
-        {menuItems.map((item, index) => (
-          <Link
-            key={index}
-            href={item.href}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <item.icon className="w-5 h-5" />
-            <span>{item.title}</span>
-          </Link>
-        ))}
+        {menuItems.map((item, index) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={index}
+              href={item.href}
+              className={`
+                flex items-center gap-3 p-3 rounded-lg transition-all duration-200
+                ${isActive 
+                  ? 'bg-blue-50 text-blue-600' 
+                  : 'text-gray-600 hover:bg-gray-100'}
+              `}
+            >
+              <item.icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-500'}`} />
+              <span className={`${isActive ? 'font-medium' : ''}`}>{item.title}</span>
+            </Link>
+          );
+        })}
       </nav>
     </aside>
   );
